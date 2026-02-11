@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwort Generator</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon-clean.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-clean-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-clean-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-clean.png">
+    
+    <style>
+        :root {
+            --bg-light: #f5f5f7;
+            --bg-card: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --border-color: #d2d2d7;
+            --accent-blue: #28a745;
+            --accent-blue-hover: #218838;
+            --success-green: #30d158;
+            --item-bg: #f5f5f7;
+            --shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-light: #000000;
+            --bg-card: #1d1d1f;
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --border-color: #424245;
+            --accent-blue: #28a745;
+            --accent-blue-hover: #218838;
+            --success-green: #30d158;
+            --item-bg: #2c2c2e;
+            --shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 32px 48px;
+            box-shadow: var(--shadow);
+            max-width: 680px;
+            width: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 16px;
+            right: 80px;
+            background: var(--item-bg);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .lang-toggle {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: var(--item-bg);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .lang-toggle:hover {
+            background: var(--border-color);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: var(--border-color);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: -0.08px;
+            text-transform: uppercase;
+        }
+
+        input[type="number"] {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 17px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15);
+        }
+
+        .button-group {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            flex: 1;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.2px;
+        }
+
+        button:hover {
+            background: var(--accent-blue-hover);
+            transform: scale(1.02);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .copy-all-btn {
+            background: var(--item-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            flex: 0.8;
+        }
+
+        .copy-all-btn:hover {
+            background: var(--border-color);
+        }
+
+        .passwords {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .password-item {
+            display: flex;
+            align-items: center;
+            background: var(--item-bg);
+            padding: 14px 16px;
+            border-radius: 10px;
+            gap: 12px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .password-item:hover {
+            border-color: var(--border-color);
+            transform: translateX(2px);
+        }
+
+        .password-text {
+            flex: 1;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-btn {
+            background: var(--accent-blue);
+            color: white;
+            padding: 6px 14px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            min-width: 90px;
+            flex: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-blue-hover);
+            transform: scale(1);
+        }
+
+        .copy-btn.copied {
+            background: var(--success-green);
+            border: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 60px 40px;
+            font-size: 17px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .copy-all-btn {
+                flex: 1;
+            }
+        }
+
+        /* Smooth scrollbar */
+        .passwords::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .passwords::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .passwords::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .passwords::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode" aria-label="Theme umschalten">🌙</button>
+        <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">EN</button>
+        
+        <div class="header">
+            <h1 id="title">Passwort Generator</h1>
+            <p class="subtitle" id="subtitle">Sichere, aussprechbare Passwörter generieren</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="length" id="labelLength">Passwortlänge</label>
+                <input type="number" id="length" min="10" max="20" value="12">
+            </div>
+            
+            <div class="control-group">
+                <label for="count" id="labelCount">Anzahl</label>
+                <input type="number" id="count" min="1" max="50" value="3">
+            </div>
+            
+            <div class="button-group">
+                <button onclick="generatePasswords()" id="btnGenerate">Generieren</button>
+                <button class="copy-all-btn" onclick="copyAllPasswords(event)" id="btnCopyAll">Alle kopieren</button>
+            </div>
+        </div>
+
+        <div class="passwords" id="passwordList">
+            <div class="empty-state" id="emptyState">
+                Klicke auf "Generieren" um Passwörter zu erstellen
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            de: {
+                title: "Passwort Generator",
+                subtitle: "Sichere, aussprechbare Passwörter generieren",
+                labelLength: "Passwortlänge",
+                labelCount: "Anzahl",
+                btnGenerate: "Generieren",
+                btnCopyAll: "Alle kopieren",
+                btnCopy: "Kopieren",
+                btnCopied: "✓ Kopiert",
+                btnAllCopied: "✓ Alle kopiert",
+                emptyState: "Klicke auf \"Generieren\" um Passwörter zu erstellen",
+                alertCount: "Bitte wähle eine Anzahl zwischen 1 und 50",
+                alertLength: "Bitte wähle eine Länge zwischen 10 und 20",
+                alertNoPasswords: "Keine Passwörter zum Kopieren vorhanden!",
+                alertCopyError: "Fehler beim Kopieren: "
+            },
+            en: {
+                title: "Password Generator",
+                subtitle: "Generate secure, pronounceable passwords",
+                labelLength: "Password Length",
+                labelCount: "Count",
+                btnGenerate: "Generate",
+                btnCopyAll: "Copy All",
+                btnCopy: "Copy",
+                btnCopied: "✓ Copied",
+                btnAllCopied: "✓ All Copied",
+                emptyState: "Click \"Generate\" to create passwords",
+                alertCount: "Please choose a count between 1 and 50",
+                alertLength: "Please choose a length between 10 and 20",
+                alertNoPasswords: "No passwords to copy!",
+                alertCopyError: "Copy error: "
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'de';
+
+        function toggleLanguage() {
+            // Sprache wechseln
+            currentLang = currentLang === 'de' ? 'en' : 'de';
+            localStorage.setItem('language', currentLang);
+            
+            // Alle UI-Elemente aktualisieren
+            updateAllUI();
+        }
+
+        function updateAllUI() {
+            const t = translations[currentLang];
+            
+            // 1. Sprachbutton aktualisieren
+            const targetLang = currentLang === 'de' ? 'en' : 'de';
+            const targetText = targetLang === 'en' ? 'EN' : 'DE';
+            document.getElementById('langToggle').textContent = targetText;
+            
+            // 2. Statische Texte aktualisieren
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('labelLength').textContent = t.labelLength;
+            document.getElementById('labelCount').textContent = t.labelCount;
+            document.getElementById('btnGenerate').textContent = t.btnGenerate;
+            document.getElementById('btnCopyAll').textContent = t.btnCopyAll;
+            
+            // Empty state nur aktualisieren wenn er sichtbar ist
+            const emptyState = document.getElementById('emptyState');
+            if (emptyState) {
+                emptyState.textContent = t.emptyState;
+            }
+            
+            // 3. ALLE Copy-Buttons aktualisieren (in den Passwortzeilen)
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            console.log('Updating', copyButtons.length, 'copy buttons to', currentLang);
+            
+            copyButtons.forEach((btn, index) => {
+                const isCopied = btn.classList.contains('copied');
+                const newText = isCopied ? t.btnCopied : t.btnCopy;
+                console.log('Button', index, ':', btn.textContent, '->', newText, '(copied:', isCopied, ')');
+                btn.textContent = newText;
+            });
+        }
+
+        // Theme Management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const button = document.querySelector('.theme-toggle');
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            button.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const button = document.querySelector('.theme-toggle');
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            button.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Zeichensets für aussprechbare Passwörter
+        const upperConsonants = 'BDFGHKLMNPRSTVW';
+        const consonants = 'bdfghklmnprstvwxz';
+        const vowels = 'aeiou';
+        const digits = '0123456789';
+        const specialChars = ['-', '+', '#'];
+
+        function getRandomChar(charset) {
+            return charset[Math.floor(Math.random() * charset.length)];
+        }
+
+        function generatePassword(length = 12) {
+            let password = '';
+            let remainingChars = length - 3;
+            
+            password += getRandomChar(upperConsonants);
+            remainingChars--;
+            
+            let useVowel = true;
+            while (remainingChars > 0) {
+                if (useVowel) {
+                    password += getRandomChar(vowels);
+                } else {
+                    password += getRandomChar(consonants);
+                }
+                useVowel = !useVowel;
+                remainingChars--;
+            }
+            
+            password += getRandomChar(digits);
+            password += getRandomChar(digits);
+            password += specialChars[Math.floor(Math.random() * specialChars.length)];
+            
+            return password;
+        }
+
+        function generatePasswords() {
+            const t = translations[currentLang];
+            const count = parseInt(document.getElementById('count').value);
+            const length = parseInt(document.getElementById('length').value);
+            const passwordList = document.getElementById('passwordList');
+            
+            if (count < 1 || count > 50) {
+                alert(t.alertCount);
+                return;
+            }
+
+            if (length < 10 || length > 20) {
+                alert(t.alertLength);
+                return;
+            }
+
+            passwordList.innerHTML = '';
+
+            for (let i = 0; i < count; i++) {
+                const password = generatePassword(length);
+                const passwordItem = document.createElement('div');
+                passwordItem.className = 'password-item';
+                
+                passwordItem.innerHTML = `
+                    <span class="password-text">${password}</span>
+                    <button class="copy-btn" onclick="copyPassword(this, '${password}')">${t.btnCopy}</button>
+                `;
+                
+                passwordList.appendChild(passwordItem);
+            }
+        }
+
+        function copyPassword(button, password) {
+            // WICHTIG: Hole die Übersetzung DYNAMISCH bei jedem Aufruf
+            const t = translations[currentLang];
+            
+            navigator.clipboard.writeText(password).then(() => {
+                button.textContent = t.btnCopied;
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    // WICHTIG: Hole die Übersetzung ERNEUT nach dem Timeout
+                    const tNow = translations[currentLang];
+                    button.textContent = tNow.btnCopy;
+                    button.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                alert(t.alertCopyError + err);
+            });
+        }
+
+        function copyAllPasswords(event) {
+            const t = translations[currentLang];
+            const passwordItems = document.querySelectorAll('.password-text');
+            if (passwordItems.length === 0) {
+                alert(t.alertNoPasswords);
+                return;
+            }
+
+            const allPasswords = Array.from(passwordItems)
+                .map(item => item.textContent)
+                .join('\n');
+
+            navigator.clipboard.writeText(allPasswords).then(() => {
+                const button = event.target;
+                button.textContent = t.btnAllCopied;
+                
+                setTimeout(() => {
+                    const tNow = translations[currentLang];
+                    button.textContent = tNow.btnCopyAll;
+                }, 1500);
+            }).catch(err => {
+                alert(t.alertCopyError + err);
+            });
+        }
+
+        // Enter-Taste zum Generieren
+        document.getElementById('count').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generatePasswords();
+            }
+        });
+        
+        document.getElementById('length').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generatePasswords();
+            }
+        });
+
+        // Automatisch beim Laden generieren
+        window.addEventListener('load', () => {
+            initTheme();
+            updateAllUI();  // Alle UI-Elemente initialisieren
+            generatePasswords();
+        });
+    </script>
+</body>
+</html>
