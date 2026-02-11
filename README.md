@@ -2,7 +2,7 @@
 
 A modern, secure password generator with pronounceable passwords.
 
-🌐 [LIVE](https://phpoyer.github.io/password-generator/)
+🌐 [Live](https://phpoyer.github.io/password-generator/)
 
 ## ✨ Features
 
@@ -30,28 +30,20 @@ A modern, secure password generator with pronounceable passwords.
 
 ## 📝 Password Format
 
-Generated 12 character passwords follow this pattern:
+Generated passwords follow this pattern:
 ```
-[2 Capital Letters][6 Consonant-Vowel Letters][3 Digits][1 Special Character]
+[Capital Letter][Consonant-Vowel Pattern][3 Digits][Special Character]
 ```
-
-**Pattern:** 2G + 6K + 3Z + 1S (12 characters)
 
 **Examples:**
-- `VibeWufu357+`
-- `NopaKate924#`
-- `TixuRevo618-`
-
-**Security (12 characters - the more signs, the better):**
-- ~16.3 trillion combinations
-- ~2.7 minutes to crack (offline brute-force attack)
-- Practically uncrackable with online rate limiting
-- Fully secure when combined with 2FA
+- LexaKiwu865-
+- MikaKuxu228!
+- VoriHaka223$
 
 **Settings:**
-- Length: 10-20 characters (default: 12)
+- Length: 12-20 characters (default: 12)
 - Count: 1-50 passwords (default: 3)
-- Special characters: `-`, `+`, `#`
+- Special characters: `-`, `!`, `$`
 
 ## 🚀 Installation
 
@@ -61,7 +53,7 @@ Generated 12 character passwords follow this pattern:
 
 ## 🎯 Usage
 
-1. **Choose password length** (10-20 characters)
+1. **Choose password length** (12-20 characters)
 2. **Set count** (1-50 passwords)
 3. **Click "Generate"**
 4. **Copy individual password** or **"Copy All"**
@@ -112,4 +104,4 @@ NON-COMMERCIAL License. See license file.
 
 ---
 
-**Note:** For maximum security, use a professional password manager such as Keepass, Proton Pass, 1Password or Bitwarden for long-term storage of your passwords.
+**Note:** For maximum security, use a professional password manager such as KeePass, Proton Pass, 1Password or Bitwarden for long-term storage of your passwords.

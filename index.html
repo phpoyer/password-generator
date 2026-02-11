@@ -320,7 +320,7 @@
         <div class="controls">
             <div class="control-group">
                 <label for="length" id="labelLength">Passwortlänge</label>
-                <input type="number" id="length" min="10" max="20" value="12">
+                <input type="number" id="length" min="12" max="20" value="12">
             </div>
             
             <div class="control-group">
@@ -356,7 +356,7 @@
                 btnAllCopied: "✓ Alle kopiert",
                 emptyState: "Klicke auf \"Generieren\" um Passwörter zu erstellen",
                 alertCount: "Bitte wähle eine Anzahl zwischen 1 und 50",
-                alertLength: "Bitte wähle eine Länge zwischen 10 und 20",
+                alertLength: "Bitte wähle eine Länge zwischen 12 und 20",
                 alertNoPasswords: "Keine Passwörter zum Kopieren vorhanden!",
                 alertCopyError: "Fehler beim Kopieren: ",
                 langCode: "DE"
@@ -373,7 +373,7 @@
                 btnAllCopied: "✓ All Copied",
                 emptyState: "Click \"Generate\" to create passwords",
                 alertCount: "Please choose a count between 1 and 50",
-                alertLength: "Please choose a length between 10 and 20",
+                alertLength: "Please choose a length between 12 and 20",
                 alertNoPasswords: "No passwords to copy!",
                 alertCopyError: "Copy error: ",
                 langCode: "EN"
@@ -494,11 +494,6 @@
             // Berechne wie viele Buchstaben wir haben (Rest nach Ziffern und Sonderzeichen)
             let letterCount = length - 4; // 4 = 3 Ziffern + 1 Sonderzeichen
             
-            // Mindestens 8 Buchstaben für das Pattern
-            if (letterCount < 8) {
-                letterCount = 8;
-            }
-            
             // Erster Buchstabe: Großer Konsonant
             password += getRandomChar(upperConsonants);
             let remainingLetters = letterCount - 1;
@@ -508,8 +503,8 @@
             let upperCount = 1; // Wir haben schon 1 Großbuchstaben
             
             for (let i = 0; i < remainingLetters; i++) {
-                // Zweiter Großbuchstabe an Position 4 (nach "Vibe" -> "VibeW...")
-                if (i === 3 && upperCount < 2) {
+                // Zweiter Großbuchstabe an Position 4 (nach "Vibe" -> "VibeW...") wenn genug Platz
+                if (i === 3 && upperCount < 2 && remainingLetters >= 4) {
                     password += getRandomChar(upperConsonants);
                     upperCount++;
                     useVowel = true; // Nach Konsonant kommt Vokal
@@ -544,7 +539,7 @@
                 return;
             }
 
-            if (length < 10 || length > 20) {
+            if (length < 12 || length > 20) {
                 alert(t.alertLength);
                 return;
             }
