@@ -266,6 +266,21 @@
             font-size: 17px;
         }
 
+        .security-notice {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: rgba(134, 134, 139, 0.08);
+            border: 1px solid rgba(134, 134, 139, 0.2);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .security-notice strong {
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 640px) {
             .container {
                 padding: 32px 24px;
@@ -339,6 +354,10 @@
                 Klicke auf "Generieren" um Passwörter zu erstellen
             </div>
         </div>
+
+        <div class="security-notice" id="securityNotice">
+            <strong>Sicherheitshinweis:</strong> Passwörter werden nach 2 Minuten aus der Zwischenablage gelöscht (Popup kann sich öffnen, "Zulassen" wählen). Für maximale Sicherheit: Windows-Zwischenablage-Verlauf manuell löschen mit der Tastenkombination Win+V. Zur sicheren Passwortspeicherung eignet sich ein Passwort-Manager wie KeePass, Proton Pass oder vergleichbare Lösungen.
+        </div>
     </div>
 
     <script>
@@ -359,7 +378,10 @@
                 alertLength: "Bitte wähle eine Länge zwischen 12 und 20",
                 alertNoPasswords: "Keine Passwörter zum Kopieren vorhanden!",
                 alertCopyError: "Fehler beim Kopieren: ",
-                langCode: "DE"
+                langCode: "DE",
+                securityBase: '<strong>Sicherheitshinweis:</strong> Passwörter werden nach 2 Minuten aus der Zwischenablage gelöscht (Popup kann sich öffnen, "Zulassen" wählen).',
+                securityWindows: ' Für maximale Sicherheit: Windows-Zwischenablage-Verlauf manuell löschen mit der Tastenkombination Win+V.',
+                securityTip: ' Zur sicheren Passwortspeicherung eignet sich ein Passwort-Manager wie KeePass, Proton Pass oder vergleichbare Lösungen.'
             },
             en: {
                 title: "Password Generator",
@@ -376,7 +398,10 @@
                 alertLength: "Please choose a length between 12 and 20",
                 alertNoPasswords: "No passwords to copy!",
                 alertCopyError: "Copy error: ",
-                langCode: "EN"
+                langCode: "EN",
+                securityBase: '<strong>Security Notice:</strong> Passwords are cleared from clipboard after 2 minutes (a popup may appear, select "Allow").',
+                securityWindows: ' For maximum security: Clear Windows clipboard history manually with Win+V key combination.',
+                securityTip: ' For secure password storage, consider using a password manager such as KeePass, Proton Pass, or similar solutions.'
             }
         };
 
@@ -444,6 +469,12 @@
             
             // Zeige die AKTUELLE Sprache an (nicht die Zielsprache)
             if (langToggle) langToggle.textContent = t.langCode;
+
+            const securityNotice = document.getElementById('securityNotice');
+            if (securityNotice) {
+                const isWindows = navigator.userAgent.indexOf('Win') !== -1;
+                securityNotice.innerHTML = t.securityBase + (isWindows ? t.securityWindows : '') + t.securityTip;
+            }
             
             // Update copy buttons if passwords are displayed
             document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -566,6 +597,7 @@
                 const originalText = button.textContent;
                 button.textContent = t.btnCopied;
                 button.classList.add('copied');
+                scheduleClipboardClear(password);
                 
                 setTimeout(() => {
                     button.textContent = t.btnCopy;
@@ -592,6 +624,7 @@
                 const button = event.target;
                 const originalText = button.textContent;
                 button.textContent = t.btnAllCopied;
+                scheduleClipboardClear(allPasswords);
                 
                 setTimeout(() => {
                     button.textContent = t.btnCopyAll;
@@ -600,6 +633,56 @@
                 alert(t.alertCopyError + err);
             });
         }
+
+        // Clipboard Auto-Clear nach 2 Minuten
+        let clipboardClearTimer = null;
+        let pendingClear = false;
+        let lastCopiedText = null;
+
+        function scheduleClipboardClear(copiedText) {
+            if (clipboardClearTimer) {
+                clearTimeout(clipboardClearTimer);
+            }
+            lastCopiedText = copiedText;
+            pendingClear = false;
+
+            clipboardClearTimer = setTimeout(() => {
+                // Versuche sofort zu löschen
+                navigator.clipboard.writeText('').then(() => {
+                    console.log('✓ Zwischenablage nach 2 Min gelöscht');
+                    lastCopiedText = null;
+                    pendingClear = false;
+                }).catch(() => {
+                    // Tab ist im Hintergrund - merke es vor
+                    pendingClear = true;
+                    console.log('⏳ Tab im Hintergrund - lösche bei Rückkehr');
+                });
+            }, 120000); // 2 Minuten
+        }
+
+        // Wenn der Tab wieder Fokus bekommt, ausstehende Löschung ausführen
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && pendingClear) {
+                navigator.clipboard.writeText('').then(() => {
+                    console.log('✓ Zwischenablage bei Tab-Rückkehr gelöscht');
+                    pendingClear = false;
+                    lastCopiedText = null;
+                }).catch(err => {
+                    console.log('Clipboard-Clear fehlgeschlagen:', err);
+                });
+            }
+        });
+
+        // Auch bei window focus (für manche Browser zuverlässiger)
+        window.addEventListener('focus', () => {
+            if (pendingClear) {
+                navigator.clipboard.writeText('').then(() => {
+                    console.log('✓ Zwischenablage bei Fenster-Fokus gelöscht');
+                    pendingClear = false;
+                    lastCopiedText = null;
+                }).catch(() => {});
+            }
+        });
 
         // Enter-Taste zum Generieren
         document.getElementById('count').addEventListener('keypress', function(e) {

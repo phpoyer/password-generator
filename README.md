@@ -13,6 +13,7 @@ A modern, secure password generator with pronounceable passwords.
 - 🔒 **100% Client-side** - No server communication, all passwords remain local
 - 💾 **Offline-capable** - No external dependencies
 - 📋 **One-click Copy** - Individual passwords or all at once
+- 🔐 **Auto-Clear Clipboard** - Passwords are automatically removed from clipboard after 2 minutes
 
 ## 🎨 Design
 

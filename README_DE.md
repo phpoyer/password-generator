@@ -13,6 +13,7 @@ Ein moderner, sicherer Passwort-Generator mit aussprechbaren Passwörtern.
 - 🔒 **100% Client-seitig** - Keine Server-Kommunikation, alle Passwörter bleiben lokal
 - 💾 **Offline-fähig** - Keine externen Dependencies
 - 📋 **Ein-Klick-Kopieren** - Einzelne Passwörter oder alle auf einmal
+- 🔐 **Automatische Zwischenablage-Löschung** - Passwörter werden nach 2 Minuten automatisch aus der Zwischenablage entfernt
 
 ## 🎨 Design
 
