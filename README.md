@@ -1,6 +1,6 @@
 # 🔐 Password Generator
 
-A modern, secure password generator with pronounceable passwords
+A modern, secure password generator with pronounceable passwords.
 
 🌐 [LIVE](https://phpoyer.github.io/password-generator/)
 
@@ -32,13 +32,21 @@ A modern, secure password generator with pronounceable passwords
 
 Generated passwords follow this pattern:
 ```
-[Capital Letter][Consonant-Vowel Pattern][2 Digits][Special Character]
+[2 Capital Letters][6 Consonant-Vowel Letters][3 Digits][1 Special Character]
 ```
 
+**Pattern:** 2G + 6K + 3Z + 1S (12 characters)
+
 **Examples:**
-- `Tokemur92+`
-- `Bavirol45-`
-- `Ligafes78#`
+- `VibeWufu357+`
+- `NopaKate924#`
+- `TixuRevo618-`
+
+**Security:**
+- ~16.3 trillion combinations
+- ~2.7 minutes to crack (offline brute-force attack)
+- Practically uncrackable with online rate limiting
+- Fully secure when combined with 2FA
 
 **Settings:**
 - Length: 10-20 characters (default: 12)
@@ -104,4 +112,4 @@ NON-COMMERCIAL License. See license file.
 
 ---
 
-**Note:** For maximum security, use a professional password manager such as 1Password, Bitwarden, or KeePass for long-term storage of your passwords.
+**Note:** For maximum security, use a professional password manager such as Keepass, Proton Pass, 1Password or Bitwarden for long-term storage of your passwords.
