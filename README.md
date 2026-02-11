@@ -30,7 +30,7 @@ A modern, secure password generator with pronounceable passwords.
 
 ## 📝 Password Format
 
-Generated passwords follow this pattern:
+Generated 12 character passwords follow this pattern:
 ```
 [2 Capital Letters][6 Consonant-Vowel Letters][3 Digits][1 Special Character]
 ```
