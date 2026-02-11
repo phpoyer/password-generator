@@ -13,7 +13,7 @@
     
     <style>
         :root {
-            --bg-light: #f5f5f7;
+            --bg-light: #1d1d1f;
             --bg-card: #ffffff;
             --text-primary: #1d1d1f;
             --text-secondary: #86868b;
@@ -310,7 +310,7 @@
 <body>
     <div class="container">
         <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode" aria-label="Theme umschalten">🌙</button>
-        <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">EN</button>
+        <button class="lang-toggle" onclick="toggleLanguage()" id="langToggle">DE</button>
         
         <div class="header">
             <h1 id="title">Passwort Generator</h1>
@@ -358,7 +358,8 @@
                 alertCount: "Bitte wähle eine Anzahl zwischen 1 und 50",
                 alertLength: "Bitte wähle eine Länge zwischen 10 und 20",
                 alertNoPasswords: "Keine Passwörter zum Kopieren vorhanden!",
-                alertCopyError: "Fehler beim Kopieren: "
+                alertCopyError: "Fehler beim Kopieren: ",
+                langCode: "DE"
             },
             en: {
                 title: "Password Generator",
@@ -374,52 +375,81 @@
                 alertCount: "Please choose a count between 1 and 50",
                 alertLength: "Please choose a length between 10 and 20",
                 alertNoPasswords: "No passwords to copy!",
-                alertCopyError: "Copy error: "
+                alertCopyError: "Copy error: ",
+                langCode: "EN"
             }
         };
 
-        let currentLang = localStorage.getItem('language') || 'de';
-
-        function toggleLanguage() {
-            // Sprache wechseln
-            currentLang = currentLang === 'de' ? 'en' : 'de';
-            localStorage.setItem('language', currentLang);
+        function detectBrowserLanguage() {
+            // Hole Browser-Sprache
+            const browserLang = navigator.language || navigator.userLanguage;
             
-            // Alle UI-Elemente aktualisieren
-            updateAllUI();
+            // Debug: Zeige erkannte Sprache in der Console
+            console.log('Browser Language detected:', browserLang);
+            
+            // Extrahiere Sprachcode (z.B. "de-DE" -> "de", "en-US" -> "en")
+            const langCode = browserLang.toLowerCase().split('-')[0];
+            
+            console.log('Language code extracted:', langCode);
+            
+            // Prüfe ob wir diese Sprache unterstützen, sonst Fallback zu 'en'
+            const finalLang = (langCode === 'de' || langCode === 'en') ? langCode : 'en';
+            console.log('Final language selected:', finalLang);
+            
+            return finalLang;
         }
 
-        function updateAllUI() {
+        // Initialisiere Sprache
+        // Wenn 'languageManuallySet' existiert, nutze localStorage
+        // Sonst nutze Browser-Erkennung
+        let currentLang;
+        const manuallySet = localStorage.getItem('languageManuallySet');
+        console.log('Language manually set?', manuallySet);
+        
+        if (manuallySet === 'true') {
+            currentLang = localStorage.getItem('language') || detectBrowserLanguage();
+            console.log('Using stored language:', currentLang);
+        } else {
+            currentLang = detectBrowserLanguage();
+            console.log('Using browser language:', currentLang);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'de' ? 'en' : 'de';
+            localStorage.setItem('language', currentLang);
+            localStorage.setItem('languageManuallySet', 'true'); // Markiere als manuell gesetzt
+            updateLanguage();
+        }
+
+        function updateLanguage() {
             const t = translations[currentLang];
             
-            // 1. Sprachbutton aktualisieren
-            const targetLang = currentLang === 'de' ? 'en' : 'de';
-            const targetText = targetLang === 'en' ? 'EN' : 'DE';
-            document.getElementById('langToggle').textContent = targetText;
-            
-            // 2. Statische Texte aktualisieren
-            document.getElementById('title').textContent = t.title;
-            document.getElementById('subtitle').textContent = t.subtitle;
-            document.getElementById('labelLength').textContent = t.labelLength;
-            document.getElementById('labelCount').textContent = t.labelCount;
-            document.getElementById('btnGenerate').textContent = t.btnGenerate;
-            document.getElementById('btnCopyAll').textContent = t.btnCopyAll;
-            
-            // Empty state nur aktualisieren wenn er sichtbar ist
+            // Sicherheitsprüfung: Nur aktualisieren wenn Elemente existieren
+            const title = document.getElementById('title');
+            const subtitle = document.getElementById('subtitle');
+            const labelLength = document.getElementById('labelLength');
+            const labelCount = document.getElementById('labelCount');
+            const btnGenerate = document.getElementById('btnGenerate');
+            const btnCopyAll = document.getElementById('btnCopyAll');
             const emptyState = document.getElementById('emptyState');
-            if (emptyState) {
-                emptyState.textContent = t.emptyState;
-            }
+            const langToggle = document.getElementById('langToggle');
             
-            // 3. ALLE Copy-Buttons aktualisieren (in den Passwortzeilen)
-            const copyButtons = document.querySelectorAll('.copy-btn');
-            console.log('Updating', copyButtons.length, 'copy buttons to', currentLang);
+            if (title) title.textContent = t.title;
+            if (subtitle) subtitle.textContent = t.subtitle;
+            if (labelLength) labelLength.textContent = t.labelLength;
+            if (labelCount) labelCount.textContent = t.labelCount;
+            if (btnGenerate) btnGenerate.textContent = t.btnGenerate;
+            if (btnCopyAll) btnCopyAll.textContent = t.btnCopyAll;
+            if (emptyState) emptyState.textContent = t.emptyState;
             
-            copyButtons.forEach((btn, index) => {
-                const isCopied = btn.classList.contains('copied');
-                const newText = isCopied ? t.btnCopied : t.btnCopy;
-                console.log('Button', index, ':', btn.textContent, '->', newText, '(copied:', isCopied, ')');
-                btn.textContent = newText;
+            // Zeige die AKTUELLE Sprache an (nicht die Zielsprache)
+            if (langToggle) langToggle.textContent = t.langCode;
+            
+            // Update copy buttons if passwords are displayed
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                if (!btn.classList.contains('copied')) {
+                    btn.textContent = t.btnCopy;
+                }
             });
         }
 
@@ -513,17 +543,14 @@
         }
 
         function copyPassword(button, password) {
-            // WICHTIG: Hole die Übersetzung DYNAMISCH bei jedem Aufruf
             const t = translations[currentLang];
-            
             navigator.clipboard.writeText(password).then(() => {
+                const originalText = button.textContent;
                 button.textContent = t.btnCopied;
                 button.classList.add('copied');
                 
                 setTimeout(() => {
-                    // WICHTIG: Hole die Übersetzung ERNEUT nach dem Timeout
-                    const tNow = translations[currentLang];
-                    button.textContent = tNow.btnCopy;
+                    button.textContent = t.btnCopy;
                     button.classList.remove('copied');
                 }, 1500);
             }).catch(err => {
@@ -545,11 +572,11 @@
 
             navigator.clipboard.writeText(allPasswords).then(() => {
                 const button = event.target;
+                const originalText = button.textContent;
                 button.textContent = t.btnAllCopied;
                 
                 setTimeout(() => {
-                    const tNow = translations[currentLang];
-                    button.textContent = tNow.btnCopyAll;
+                    button.textContent = t.btnCopyAll;
                 }, 1500);
             }).catch(err => {
                 alert(t.alertCopyError + err);
@@ -572,7 +599,7 @@
         // Automatisch beim Laden generieren
         window.addEventListener('load', () => {
             initTheme();
-            updateAllUI();  // Alle UI-Elemente initialisieren
+            updateLanguage();
             generatePasswords();
         });
     </script>
