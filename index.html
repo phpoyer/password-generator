@@ -476,7 +476,7 @@
 
         // Zeichensets für aussprechbare Passwörter
         const upperConsonants = 'BDFGHKLMNPRSTVW';
-        const consonants = 'bdfghklmnprstvwxz';
+        const consonants = 'bdfghklmnprstvwx';
         const vowels = 'aeiou';
         const digits = '0123456789';
         const specialChars = ['-', '+', '#'];
@@ -486,25 +486,48 @@
         }
 
         function generatePassword(length = 12) {
+            // Pattern: 2 Großbuchstaben + 6 Kleinbuchstaben + 3 Ziffern + 1 Sonderzeichen
+            // Beispiel: VibeWufu357+
+            
             let password = '';
-            let remainingChars = length - 3;
             
-            password += getRandomChar(upperConsonants);
-            remainingChars--;
+            // Berechne wie viele Buchstaben wir haben (Rest nach Ziffern und Sonderzeichen)
+            let letterCount = length - 4; // 4 = 3 Ziffern + 1 Sonderzeichen
             
-            let useVowel = true;
-            while (remainingChars > 0) {
-                if (useVowel) {
-                    password += getRandomChar(vowels);
-                } else {
-                    password += getRandomChar(consonants);
-                }
-                useVowel = !useVowel;
-                remainingChars--;
+            // Mindestens 8 Buchstaben für das Pattern
+            if (letterCount < 8) {
+                letterCount = 8;
             }
             
+            // Erster Buchstabe: Großer Konsonant
+            password += getRandomChar(upperConsonants);
+            let remainingLetters = letterCount - 1;
+            
+            // Konsonant-Vokal-Muster mit zweitem Großbuchstaben
+            let useVowel = true; // Nach Konsonant kommt Vokal
+            let upperCount = 1; // Wir haben schon 1 Großbuchstaben
+            
+            for (let i = 0; i < remainingLetters; i++) {
+                // Zweiter Großbuchstabe an Position 4 (nach "Vibe" -> "VibeW...")
+                if (i === 3 && upperCount < 2) {
+                    password += getRandomChar(upperConsonants);
+                    upperCount++;
+                    useVowel = true; // Nach Konsonant kommt Vokal
+                } else if (useVowel) {
+                    password += getRandomChar(vowels);
+                    useVowel = false;
+                } else {
+                    password += getRandomChar(consonants);
+                    useVowel = true;
+                }
+            }
+            
+            // 3 Ziffern
             password += getRandomChar(digits);
             password += getRandomChar(digits);
+            password += getRandomChar(digits);
+            
+            // 1 Sonderzeichen am Ende
             password += specialChars[Math.floor(Math.random() * specialChars.length)];
             
             return password;
