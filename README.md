@@ -1,6 +1,6 @@
 # 🔐 Password Generator
 
-A modern, secure password generator with pronounceable passwords.
+A modern, secure password generator with pronounceable passwords
 
 🌐 [LIVE](https://phpoyer.github.io/password-generator/)
 
