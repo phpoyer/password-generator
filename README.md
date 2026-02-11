@@ -42,7 +42,7 @@ Generated passwords follow this pattern:
 - `NopaKate924#`
 - `TixuRevo618-`
 
-**Security:**
+**Security (12 characters - the more signs, the better):**
 - ~16.3 trillion combinations
 - ~2.7 minutes to crack (offline brute-force attack)
 - Practically uncrackable with online rate limiting
